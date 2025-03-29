@@ -1,34 +1,28 @@
 package com.project.ecommerce.order_management.service.impl;
 
-import com.mysql.cj.util.StringUtils;
-import com.project.ecommerce.order_management.model.Roles;
+import com.project.ecommerce.order_management.exception.UserNotFound;
 import com.project.ecommerce.order_management.model.User;
 import com.project.ecommerce.order_management.repository.UserRepository;
 import com.project.ecommerce.order_management.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {  // <-- Use PasswordEncoder
+    UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void createUser(User user) {
-        if (user.getRole() == null)
-            user.setRole(Roles.ROLE_CUSTOMER);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash password before saving
         userRepository.save(user);
     }
 
@@ -40,5 +34,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUser(String emailId) {
         return userRepository.findByEmailId(emailId);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        getUser(user.getEmailId())
+                .orElseThrow(() -> new UserNotFound("User with email id - " + user.getEmailId() + " is not found, Please create new"));
+        int rowCount = userRepository.updateByEmailId(user.getEmailId(), user.getPassword(), user.getRole());
+        log.info("Updated user {} and total rows affected are :- {}", user.getEmailId(), rowCount);
     }
 }

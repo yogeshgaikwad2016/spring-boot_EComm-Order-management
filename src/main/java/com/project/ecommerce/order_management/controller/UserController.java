@@ -1,9 +1,11 @@
 package com.project.ecommerce.order_management.controller;
 
+import com.project.ecommerce.order_management.Constants;
 import com.project.ecommerce.order_management.exception.ErrorResponse;
 import com.project.ecommerce.order_management.exception.UserNotFound;
 import com.project.ecommerce.order_management.model.User;
 import com.project.ecommerce.order_management.service.UserService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -56,16 +60,34 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    ResponseEntity<String> createUser(@RequestBody User user, BindingResult result) {
+    ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) {
 
         if (result.hasErrors()) {
-            log.error("Validation failed for field - {}", result.getTarget());
-            return ResponseEntity.badRequest().body("Validation failed");
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> {
+                errors.put(error.getField(), error.getDefaultMessage());
+            });
+            log.info(Constants.VALIDATION_ERROR_MSG, errors);
+            return ResponseEntity.badRequest().body(errors);
         }
 
         userService.createUser(user);
 
         log.info("User {} created successfully.", user.getEmailId());
         return ResponseEntity.ok("User with emailID: " + user.getEmailId() + " is created");
+    }
+
+    @PutMapping("/user")
+    ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> {
+                errors.put(error.getField(), error.getDefaultMessage());
+            });
+            log.info(Constants.VALIDATION_ERROR_MSG, errors);
+            return ResponseEntity.badRequest().body(errors);
+        }
+        userService.updateUser(user);
+        return ResponseEntity.ok("User " + user.getEmailId() + " updated successfully");
     }
 }
