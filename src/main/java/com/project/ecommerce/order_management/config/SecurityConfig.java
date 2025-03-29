@@ -31,8 +31,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF if not required
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.DELETE).hasRole("SUPER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
-                        .requestMatchers("/api/v1/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/*").permitAll()
+                        .requestMatchers("/api/v1/users", "/api/v1/product*").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
