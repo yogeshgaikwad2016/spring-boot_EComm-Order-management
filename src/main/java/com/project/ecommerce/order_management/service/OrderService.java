@@ -1,6 +1,7 @@
 package com.project.ecommerce.order_management.service;
 
 import com.project.ecommerce.order_management.model.OrderRequest;
+import com.project.ecommerce.order_management.model.OrderStatus;
 import com.project.ecommerce.order_management.model.SalesOrder;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface OrderService {
     SalesOrder getSO(String orderId);
 
     List<SalesOrder> getAllSO();
+
+    SalesOrder updateOrderStatus(String soId, OrderStatus status);
 }

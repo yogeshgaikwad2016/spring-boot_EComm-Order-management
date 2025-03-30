@@ -92,6 +92,13 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll();
     }
 
+    @Override
+    public SalesOrder updateOrderStatus(String soId, OrderStatus status) {
+        SalesOrder order = getSO(soId);
+        order.setOrderStatus(status);
+        return updateSO(order);
+    }
+
     private String generateUniqueSoId() {
         Random random = new Random();
         String orderId;

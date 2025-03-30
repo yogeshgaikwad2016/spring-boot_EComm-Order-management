@@ -31,13 +31,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF if not required
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.DELETE).hasRole("SUPER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/product/*").permitAll()
-                        .requestMatchers("/api/v1/users", "/api/v1/product*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE).hasRole("SUPER") // Only SUPER can delete
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll() // Public endpoint for user registration
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/*").permitAll() // Public product access
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users", "/api/v1/product*").hasRole("ADMIN") // Admin-only routes
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/order/status/*").hasRole("ADMIN") // Restrict order status updates to ADMIN
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
+
 
         return http.build();
     }
