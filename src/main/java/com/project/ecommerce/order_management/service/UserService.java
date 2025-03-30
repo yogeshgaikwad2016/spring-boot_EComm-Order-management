@@ -11,7 +11,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    Optional<User> getUser(String emailId);
+    User getUser(String emailId);
 
     void updateUser(User user);
 }

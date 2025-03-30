@@ -16,7 +16,23 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<Object> handleUserNotFound(UserNotFound ex) {
+    public ResponseEntity<Object> handleNotFound(UserNotFound ex) {
+        Map<String, Object> res = new HashMap<>();
+        res.put(Constants.MESSAGE, ex.getMessage());
+
+        return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientStock.class)
+    public ResponseEntity<Object> stockError(InsufficientStock ex) {
+        Map<String, Object> res = new HashMap<>();
+        res.put(Constants.MESSAGE, ex.getMessage());
+
+        return new ResponseEntity<>(res, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(SONotFound.class)
+    public ResponseEntity<Object> handleSONotFound(SONotFound ex) {
         Map<String, Object> res = new HashMap<>();
         res.put(Constants.MESSAGE, ex.getMessage());
 

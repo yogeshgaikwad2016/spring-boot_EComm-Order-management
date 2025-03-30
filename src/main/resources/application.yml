@@ -15,6 +15,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+    id:
+      generator:
+        so_id: com.project.ecommerce.order_management.generator.SOIdGenerator
     show-sql: true
     properties:
       hibernate:

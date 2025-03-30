@@ -13,15 +13,15 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long productId;
+    private long productId;
 
     @Column(unique = true, nullable = false)
-    String productName;
+    private String productName;
 
-    String description;
+    private String description;
 
-    int stock = 0;
+    private int stock = 0;
 
     @Column(nullable = false)
-    double price;
+    private double price;
 }

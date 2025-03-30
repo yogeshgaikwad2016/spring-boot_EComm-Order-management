@@ -32,12 +32,7 @@ public class UserController {
             log.error("E-Mail id is mandatory, please provide email id.");
             return ResponseEntity.badRequest().body(new ErrorResponse("E-Mail id is empty, please provide email id."));
         }
-        User user = userService.getUser(emailId)
-                .orElseThrow(() -> new UserNotFound("User with email id - " + emailId + " is not found, Please create new"));
-        if (user == null) {
-            log.error("User + {} not found", emailId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("User not found"));
-        }
+        User user = userService.getUser(emailId);
         return ResponseEntity.ok(user);
     }
 

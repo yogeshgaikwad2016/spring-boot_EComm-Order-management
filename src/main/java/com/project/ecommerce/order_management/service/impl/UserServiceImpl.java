@@ -32,14 +32,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUser(String emailId) {
-        return userRepository.findByEmailId(emailId);
+    public User getUser(String emailId) {
+        return userRepository.findByEmailId(emailId)
+                .orElseThrow(() -> new UserNotFound("User with email id - " + emailId + " is not found, Please create new"));
     }
 
     @Override
     public void updateUser(User user) {
-        getUser(user.getEmailId())
-                .orElseThrow(() -> new UserNotFound("User with email id - " + user.getEmailId() + " is not found, Please create new"));
+        getUser(user.getEmailId());
         int rowCount = userRepository.updateByEmailId(user.getEmailId(), user.getPassword(), user.getRole());
         log.info("Updated user {} and total rows affected are :- {}", user.getEmailId(), rowCount);
     }
