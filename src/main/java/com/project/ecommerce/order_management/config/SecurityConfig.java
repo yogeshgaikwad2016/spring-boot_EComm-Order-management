@@ -29,17 +29,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF if not required
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.DELETE).hasRole("SUPER") // Only SUPER can delete
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll() // Public endpoint for user registration
-                        .requestMatchers(HttpMethod.GET, "/api/v1/product/*").permitAll() // Public product access
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users", "/api/v1/product*").hasRole("ADMIN") // Admin-only routes
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/order/status/*").hasRole("ADMIN") // Restrict order status updates to ADMIN
+                        // Permit all Swagger endpoints explicitly:
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        // Other security rules:
+                        .requestMatchers(HttpMethod.DELETE).hasRole("SUPER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users", "/api/v1/product*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/order/status/*").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
-
 
         return http.build();
     }

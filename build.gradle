@@ -50,6 +50,9 @@ dependencies {
 
 	//Jakarta
 	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+	//Swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 }
 
 tasks.named('test') {
