@@ -41,6 +41,7 @@ public class SecurityConfig {
                         ).permitAll()
                         // Other security rules:
                         .requestMatchers(HttpMethod.DELETE).hasRole("SUPER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/aws/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/product/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users", "/api/v1/product*").hasRole("ADMIN")
